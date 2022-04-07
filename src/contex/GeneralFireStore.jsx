@@ -1,5 +1,5 @@
 import { createContext,useState,useEffect } from "react";
-import {collection,addDoc,getDocs, doc} from 'firebase/firestore'
+import {collection,addDoc,getDocs, doc,deleteDoc,onSnapshot} from 'firebase/firestore'
 import * as firebaseApp from '../firebase/configFirebase'
 import {ref,uploadBytesResumable,getDownloadURL} from 'firebase/storage'
 export const  FirestoreContext = createContext();
@@ -36,10 +36,21 @@ const FirestoreProvider = ({children}) =>{
     
     //TODOS modify Products
     //DELETE producs
+    const deleteProduct = (id) =>{
+        const referenceDoct =  doc(firebaseApp.firestore,"products",id)
+        deleteDoc(referenceDoct)
+    }
+
+    //observer that check if there are changes in our data 
+
+    onSnapshot(doc(firebaseApp.firestore,'products',"name"),(doc)=>{
+        getAllProducts()
+    })
 
     const data = {
         allProducts:allProducts,
-        addProduct:addProduct
+        addProduct:addProduct,
+        deleteProduct:deleteProduct
     }
 
     return(
